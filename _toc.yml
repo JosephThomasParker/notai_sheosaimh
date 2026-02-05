@@ -4,7 +4,5 @@
 format: jb-book
 root: index
 
-parts:
-  - caption: Reduced Precision
-    chapters:
+chapters:
     - file: reduced_precision/intro
