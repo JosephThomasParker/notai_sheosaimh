@@ -7,5 +7,3 @@ root: index
 chapters:
     - file: reduced_precision/intro
     - file: reduced_precision/mixed_precision
-    - file: reduced_precision/intro.md
-    - file: reduced_precision/mixed_precision.md
