@@ -1,6 +1,4 @@
-# Reduced and Mixed Precision
-
-## Representation of numbers
+# Representation of numbers
 
 Real numbers can be represented as
 
@@ -11,7 +9,7 @@ $$
 In a computer, the sign, mantissa and exponent are all expressed in binary. 
 The sign is always one bit, while the mantissa and exponent use a different number of bits, depending on the precision.
 
-### Single Precision, FP32
+## Single Precision, FP32
 
 In single precision, the mantissa has 23 bits, and the exponent has 8 bits.
 The numbers that can be expressed in FP32 are
@@ -42,7 +40,7 @@ $$
 2^{-24}\approx 6\times 10^{-8}.
 $$
 
-### Other precision types
+## Other precision types
 
 | Representation    | Exponent bits | Mantissa bits | Exponent bias | Min positive | Max        | Precision     |
 | ----------------- | ------------- | ------------- | ------------- | ------------ | ---------- | ------------- |
