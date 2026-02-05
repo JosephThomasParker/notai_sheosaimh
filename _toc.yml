@@ -7,4 +7,4 @@ root: index
 parts:
   - caption: Reduced Precision
     chapters:
-    - file: reduced_precision/intro.md
+    - file: reduced_precision/intro
