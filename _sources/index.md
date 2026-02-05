@@ -2,6 +2,6 @@
 
 This is my first notes page.
 
-- Bullet 1
-- Bullet 2
+- [Reduced Precision](reduced_precision/intro.md)
+- [Mixed Precision](reduced_precision/mixed_precision.md)
 
