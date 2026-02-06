@@ -59,6 +59,8 @@
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'reduced_precision/operation_costs';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -336,6 +338,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Memory transfers</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computation-cost">Computation Cost</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware">Hardware</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
 </ul>
             </nav>
         </div>
@@ -367,6 +374,68 @@ Therefore, FP32 are transferred twice as fast as FP64, and twice as slow as FP16
 At lower precisions, the speed-up can be even greater, owing to vectorization and better cache efficiency.
 In memory bandwidth limited codes, this is a huge effect!</p>
 </section>
+</section>
+<section id="computation-cost">
+<h2>Computation Cost<a class="headerlink" href="#computation-cost" title="Link to this heading">#</a></h2>
+<p>It is tempting to treat arithmetic operations like they are algorithms, and count their computational complexity.
+For example, to add two numbers in floating point, we compare their exponents, shift the smaller number’s mantissa accordingly, add the shifted mantissae, normalize the result (adjust the exponent and mantissa so it’s in proper floating-point form), and round.
+This whole operation takes <span class="math notranslate nohighlight">\(O(E + 3M)\)</span>, where <span class="math notranslate nohighlight">\(E\)</span> and <span class="math notranslate nohighlight">\(M\)</span> are the number of bits in the exponents and mantissa of the precision type respectively.
+Similarly, multiplication takes <span class="math notranslate nohighlight">\(O(M^2)\)</span> operations, and fused add multiply (FMA, <span class="math notranslate nohighlight">\(a*b+c\)</span> in a single operation) also takes <span class="math notranslate nohighlight">\(O(M^2)\)</span>.</p>
+<p>This is interesting - and details like rounding will become important later - but for now, the more important point is that the performance of code is determined by how these operations are implemented in hardware.
+There are two aspects that determine speed: latency and throughput.
+Latency is the initial overhead of performing an operation,
+while throughput is the rate at which operations are performed (in units of operations per clock cycle per compute unit).
+In a sufficiently compute-bound code where operations can be pipelined, latency can be neglected, and “speed” is determined by throughput.</p>
+<p>By this metric, all three of add, multiply and FMA take the same number of clock cycles, and the real difference in speed comes down to how different hardware handles difference precision types.</p>
+<section id="hardware">
+<h3>Hardware<a class="headerlink" href="#hardware" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Precision</p></th>
+<th class="head"><p>CPU throughput (per cycle per SIMD unit)</p></th>
+<th class="head"><p>GPU throughput (per cycle per CUDA core)</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FP16</p></td>
+<td><p>Often emulated in FP32, little benefit; sometimes 2× FP32 if AVX-512 BF16/F16 support exists</p></td>
+<td><p>Tensor cores can do 2–8× FP32 rate for GEMM; otherwise ~2× FP32</p></td>
+<td><p>Lower precision can pack multiple values per register; limited dynamic range</p></td>
+</tr>
+<tr class="row-odd"><td><p>BF16</p></td>
+<td><p>Emulated in FP32 (1× FP32 speed)</p></td>
+<td><p>Often same as FP16: hardware accumulates in FP32, so very fast</p></td>
+<td><p>Exponent matches FP32 → safe for mixed-precision matmuls</p></td>
+</tr>
+<tr class="row-even"><td><p>FP32</p></td>
+<td><p>1× (baseline)</p></td>
+<td><p>1× per standard CUDA core; tensor cores can use 2× speed if packing multiple values</p></td>
+<td><p>Standard single-precision</p></td>
+</tr>
+<tr class="row-odd"><td><p>FP64</p></td>
+<td><p>0.5–1× FP32 (desktop CPU often same as FP32 with AVX-512)</p></td>
+<td><p>1/2 to 1/32 × FP32 depending on GPU generation</p></td>
+<td><p>Many consumer GPUs have far fewer FP64 units than FP32; pro cards (A100, MI100) much better</p></td>
+</tr>
+<tr class="row-even"><td><p>FP128 / Quad</p></td>
+<td><p>Rare on CPU; huge slowdowns</p></td>
+<td><p>Almost never supported</p></td>
+<td><p>Mostly used in scientific CPU libraries; very high latency and low throughput</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Memory-bound codes:</strong> Throughput varies linearly with bits (e.g., FP32 transfers 2x FP64, FP16 0.5x FP32).</p></li>
+<li><p><strong>Compute-bound codes:</strong> GPU hardware dominates; FP32 is usually fastest in terms of real wall-clock per scalar op, but FP16/BF16 GEMM can be much faster if tensor cores are used.</p></li>
+<li><p><strong>CPU vs GPU:</strong> CPUs tend to treat FP32 and FP64 more similarly in vectorized code; GPUs have extreme differences in FP64/FP32 throughput.</p></li>
+<li><p><strong>Mixed precision:</strong> Doing FP16 multiply + FP32 accumulation lets you keep FP32 dynamic range but get FP16 memory/compute speedups.</p></li>
+</ul>
 </section>
 </section>
 
@@ -430,6 +499,11 @@ In memory bandwidth limited codes, this is a huge effect!</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Memory transfers</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computation-cost">Computation Cost</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware">Hardware</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
 </ul>
   </nav></div>
 
