@@ -37,4 +37,25 @@ Latency is the initial overhead of performing an operation,
 while throughput is the rate at which operations are performed (in units of operations per clock cycle per compute unit).
 In a sufficiently compute-bound code where operations can be pipelined, latency can be neglected, and "speed" is determined by throughput.
 
-By this metric, all three of add, mult and FMA take the same number of clock cycles, and the real difference in speed comes down to how different hardware handles difference precision types.
+By this metric, all three of add, multiply and FMA take the same number of clock cycles, and the real difference in speed comes down to how different hardware handles difference precision types.
+
+### Hardware
+
+| Precision    | CPU throughput (per cycle per SIMD unit)                                                     | GPU throughput (per cycle per CUDA core)                                            | Notes                                                                             |
+| ------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| FP16         | Often emulated in FP32, little benefit; sometimes 2× FP32 if AVX-512 BF16/F16 support exists | Tensor cores can do 2–8× FP32 rate for GEMM; otherwise ~2× FP32                     | Lower precision can pack multiple values per register; limited dynamic range                |
+| BF16         | Emulated in FP32 (1× FP32 speed)                                                             | Often same as FP16: hardware accumulates in FP32, so very fast                      | Exponent matches FP32 → safe for mixed-precision matmuls                                    |
+| FP32         | 1× (baseline)                                                                                | 1× per standard CUDA core; tensor cores can use 2× speed if packing multiple values | Standard single-precision                                                                   |
+| FP64         | 0.5–1× FP32 (desktop CPU often same as FP32 with AVX-512)                                    | 1/2 to 1/32 × FP32 depending on GPU generation                                      | Many consumer GPUs have far fewer FP64 units than FP32; pro cards (A100, MI100) much better |
+| FP128 / Quad | Rare on CPU; huge slowdowns                                                                  | Almost never supported                                                              | Mostly used in scientific CPU libraries; very high latency and low throughput               |
+
+
+## Summary
+
+* **Memory-bound codes:** Throughput varies linearly with bits (e.g., FP32 transfers 2x FP64, FP16 0.5x FP32).
+
+* **Compute-bound codes:** GPU hardware dominates; FP32 is usually fastest in terms of real wall-clock per scalar op, but FP16/BF16 GEMM can be much faster if tensor cores are used.
+
+* **CPU vs GPU:** CPUs tend to treat FP32 and FP64 more similarly in vectorized code; GPUs have extreme differences in FP64/FP32 throughput.
+
+* **Mixed precision:** Doing FP16 multiply + FP32 accumulation lets you keep FP32 dynamic range but get FP16 memory/compute speedups.
