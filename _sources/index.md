@@ -4,8 +4,5 @@ layout: home
 ---
 # Nótaí Sheosaimh
 
-This is my first notes page.
-
-- [Reduced Precision](reduced_precision/intro.md)
-- [Mixed Precision](reduced_precision/mixed_precision.md)
+This is a small collection of notes, mostly to test formatting notes via GitHub.
 
