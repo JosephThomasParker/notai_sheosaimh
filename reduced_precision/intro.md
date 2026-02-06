@@ -1,3 +1,8 @@
+---
+title: Representation of numbers
+layout: post
+---
+
 # Representation of numbers
 
 Real numbers can be represented as
