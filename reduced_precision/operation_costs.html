@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Memory footprint &#8212; Notai Sheosaimh</title>
+    <title>Operation Costs &#8212; Notai Sheosaimh</title>
   
   
   
@@ -182,7 +182,7 @@
         </ul>
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Representation of numbers</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Memory footprint</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Operation Costs</a></li>
 </ul>
 
     </div>
@@ -308,7 +308,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -319,11 +321,23 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Memory footprint</h1>
+    <h1>Operation Costs</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-transfers">Memory transfers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-footprint">Memory Footprint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Memory transfers</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -333,11 +347,27 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="memory-footprint">
-<h1>Memory footprint<a class="headerlink" href="#memory-footprint" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="operation-costs">
+<h1>Operation Costs<a class="headerlink" href="#operation-costs" title="Link to this heading">#</a></h1>
+<p>In this section, we discuss the cost of doing operations with different precision types.
+“Cost” can mean many things - run time, energy consumption, area required on the chip - but here we are interested in code performance, so focus on the time for operations to complete.
+We focus on two kinds of operations: memory transfers and arithmetic operations.</p>
+<section id="memory-transfers">
+<h2>Memory transfers<a class="headerlink" href="#memory-transfers" title="Link to this heading">#</a></h2>
+<section id="memory-footprint">
+<h3>Memory Footprint<a class="headerlink" href="#memory-footprint" title="Link to this heading">#</a></h3>
 <p>Each 0 or 1 in a number’s representation is a <em>bit</em>.
 So FP16 and bf16 are 16 bit, FP32 is 32 bit, and FP64 is 64 bit.</p>
 <p>There are 8 bits in a byte, so FP16 and bf16 are 2 bytes, FP32 is 4 bytes and FP64 is 8 bytes.</p>
+</section>
+<section id="id1">
+<h3>Memory transfers<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>As a first approximation, memory transfers happen at a constant rate, proportional to the amount of data to be transferred.
+Therefore, FP32 are transferred twice as fast as FP64, and twice as slow as FP16/bf16.
+At lower precisions, the speed-up can be even greater, owing to vectorization and better cache efficiency.
+In memory bandwidth limited codes, this is a huge effect!</p>
+</section>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -385,6 +415,25 @@ So FP16 and bf16 are 16 bit, FP32 is 32 bit, and FP64 is 64 bit.</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-transfers">Memory transfers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#memory-footprint">Memory Footprint</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Memory transfers</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
