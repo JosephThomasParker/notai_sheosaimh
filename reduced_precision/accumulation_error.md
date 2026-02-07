@@ -95,7 +95,7 @@ Note also that while these errors are specific to a constant increment, they are
 In any case, the representation error $\varepsilon$ is not really a constant, but rather an unknown term with that order of magnitude.
 In more general algorithms, we would make estimates for order of magnitude of all terms.
 
-## Single Precision
+## Single Precision
 
 Now consider performing the same operation in single precision:
 

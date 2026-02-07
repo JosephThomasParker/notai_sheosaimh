@@ -4,6 +4,9 @@
 format: jb-book
 root: index
 
-chapters:
-    - file: reduced_precision/intro
-    - file: reduced_precision/operation_costs.md
+parts:
+    - caption: Reduced Precision
+      chapters:
+      - file: reduced_precision/intro
+      - file: reduced_precision/operation_costs
+      - file: reduced_precision/accumulation_error
