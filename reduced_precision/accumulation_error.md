@@ -95,6 +95,28 @@ Note also that while these errors are specific to a constant increment, they are
 In any case, the representation error $\varepsilon$ is not really a constant, but rather an unknown term with that order of magnitude.
 In more general algorithms, we would make estimates for order of magnitude of all terms.
 
+### Results
+
+Executing the code above, we obtain
+
+```
+FP64 final value: 10001.000001578721, accumulated error: 1.579e-06
+```
+instead of the exact result 10001.
+
+Using the parameters $x_0=1$, $N=10,000,000$, $dx=0.001$ and $\varepsilon_{64}=1\times 10^{-16}$, the three error terms are approximately
+
+$$
+N\varepsilon_{64} dx = 10^8 . 10^{-16} . 10^{-3} &= 10^{-11},\\
+N \varepsilon_{64} x_0 &= 10^{-8}\\
+\varepsilon_{64} \frac{N(N+1)}{2} dx = 10^{-16} \frac{10^8}{2} 10^{-3} &= 5\times 10^{-4}. 
+$$
+
+This gives an overall estimate of $5\times10^{-4}$. 
+While this value is a few orders-of-magnitude too large, it is roughly correct:
+the above argument assumes that all errors accumulate, while in practice the error is not of fixed sign
+and there would be some degree of cancellation.
+
 ## Single Precision
 
 Now consider performing the same operation in single precision:
@@ -122,3 +144,21 @@ N\varepsilon_{32} dx
 $$ 
 
 which are exactly the same, except that are $\varepsilon_{32}/\varepsilon_{64} = 6\times 10^8$ times larger.
+This error is significant, and limits the usefulness of single precision in calculations.
+This is why domain specialists will say that using double precision is necessary in their applications.
+
+### Results
+
+Executing the code in single precision, we obtain
+
+```
+FP32 final value: 9781.180664062500, accumulated error: -2.198e+02
+```
+instead of the exact result 10001.
+Note that this is indeed $\sim10^8$ times larger than the accumulation error in the corresponding double precision calculation.
+Note also that the sign of the error is negative, and the accumulation error can accumulate in either direction.
+
+## Mixed Precision
+
+
+
