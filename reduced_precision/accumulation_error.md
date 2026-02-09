@@ -270,3 +270,10 @@ which stays the dominant error for the first $2\varepsilon_{32}/\varepsilon_{64}
 ### Accumulation Error versus Loop Iterations
 
 ![](accumulated_error.png)
+
+Here we have plotted the accumulation error again number of loop iterations of the three precisions: FP32, FP64 and mixed.
+
+As expected, both FP32 and FP64 scale as number of iterations squared, $n^2$, with FP32 error larger by a factor of $\sim \varepsilon_{32}/\varepsilon_{64} \sim 10^9$.
+
+For small $n$, the accumulation error for FP32 and mixed are about the same, but the mixed accumulation error grows only linearly, so is significantly smaller than the FP32 error as $n$ increases. 
+Note that we do not reach $n \sim 10^9$, so the linear component of the mixed precision accumulation error dominates the quadratic error for the whole of the plot.
