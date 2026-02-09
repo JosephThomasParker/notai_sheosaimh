@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Representation Error &#8212; Notai Sheosaimh</title>
+    <title>Accumulation Error and Mixed Precision &#8212; Notai Sheosaimh</title>
   
   
   
@@ -186,8 +186,7 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Representation of numbers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="operation_costs.html">Operation Costs</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Representation Error</a></li>
-
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Accumulation Error and Mixed Precision</a></li>
 </ul>
 
     </div>
@@ -326,7 +325,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Representation Error</h1>
+    <h1>Accumulation Error and Mixed Precision</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -336,14 +335,25 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Representation Error</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#accumulation-error">Accumulation Error</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#double-precision">Double Precision</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#single-precision">Single Precision</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#representation-error">Representation Error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accumulation-error">Accumulation Error</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#double-precision">Double Precision</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#single-precision">Single Precision</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Results</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mixed-precision">Mixed Precision</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Results</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#implications">Implications</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#accumulation-error-versus-loop-iterations">Accumulation Error versus Loop Iterations</a></li>
 </ul>
 </li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -354,8 +364,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="representation-error">
-<h1>Representation Error<a class="headerlink" href="#representation-error" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="accumulation-error-and-mixed-precision">
+<h1>Accumulation Error and Mixed Precision<a class="headerlink" href="#accumulation-error-and-mixed-precision" title="Link to this heading">#</a></h1>
+<section id="representation-error">
+<h2>Representation Error<a class="headerlink" href="#representation-error" title="Link to this heading">#</a></h2>
 <p>Representation error is the error that arises from representing a number using
 a finite number of binary digits.
 Floating-point numbers store a number as a sign, exponent, and mantissa, which
@@ -371,8 +383,8 @@ that is, it has an error in its 16th decimal place.</p>
 <p>Representation is usually negligible by itself, but becomes significant when repeated operations accumulate it,
 leading to the much larger <em>accumulation error</em>.</p>
 </section>
-<section class="tex2jax_ignore mathjax_ignore" id="accumulation-error">
-<h1>Accumulation Error<a class="headerlink" href="#accumulation-error" title="Link to this heading">#</a></h1>
+<section id="accumulation-error">
+<h2>Accumulation Error<a class="headerlink" href="#accumulation-error" title="Link to this heading">#</a></h2>
 <p>Accumulation error is the error that results from repeatedly rounding numbers
 during numerical operations.  Floating-point arithmetic is not exact: each
 operation produces a result that is rounded to the nearest representable value,
@@ -381,7 +393,7 @@ relative spacing between representable numbers at a given precision.  When such
 operations are performed many times in sequence, these small rounding errors
 can accumulate, and can grow into the dominant error.</p>
 <section id="double-precision">
-<h2>Double Precision<a class="headerlink" href="#double-precision" title="Link to this heading">#</a></h2>
+<h3>Double Precision<a class="headerlink" href="#double-precision" title="Link to this heading">#</a></h3>
 <p>Consider this code:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -434,9 +446,28 @@ Note that for small <span class="math notranslate nohighlight">\(N\)</span>, the
 <p>Note also that while these errors are specific to a constant increment, they are representative of the behaviour of accumulation errors more generally.
 In any case, the representation error <span class="math notranslate nohighlight">\(\varepsilon\)</span> is not really a constant, but rather an unknown term with that order of magnitude.
 In more general algorithms, we would make estimates for order of magnitude of all terms.</p>
+<section id="results">
+<h4>Results<a class="headerlink" href="#results" title="Link to this heading">#</a></h4>
+<p>Executing the code above, we obtain</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FP64</span> <span class="n">final</span> <span class="n">value</span><span class="p">:</span> <span class="mf">10001.000001578721</span><span class="p">,</span> <span class="n">accumulated</span> <span class="n">error</span><span class="p">:</span> <span class="mf">1.579e-06</span>
+</pre></div>
+</div>
+<p>instead of the exact result 10001.</p>
+<p>Using the parameters <span class="math notranslate nohighlight">\(x_0=1\)</span>, <span class="math notranslate nohighlight">\(N=10,000,000\)</span>, <span class="math notranslate nohighlight">\(dx=0.001\)</span> and <span class="math notranslate nohighlight">\(\varepsilon_{64}=1\times 10^{-16}\)</span>, the three error terms are approximately</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+N\varepsilon_{64} dx = 10^8 . 10^{-16} . 10^{-3} &amp;= 10^{-11},\\
+N \varepsilon_{64} x_0 &amp;= 10^{-8}\\
+\varepsilon_{64} \frac{N(N+1)}{2} dx = 10^{-16} \frac{10^{16}}{2} 10^{-3} &amp;= 5\times 10^{-4}. 
+\end{split}\]</div>
+<p>This gives an overall estimate of <span class="math notranslate nohighlight">\(5\times10^{-4}\)</span>.
+While this value is a few orders-of-magnitude too large, it is roughly correct:
+the above argument assumes that all errors accumulate, while in practice the error is not of fixed sign
+and there would be some degree of cancellation.</p>
+</section>
 </section>
 <section id="single-precision">
-<h2>Single Precision<a class="headerlink" href="#single-precision" title="Link to this heading">#</a></h2>
+<h3>Single Precision<a class="headerlink" href="#single-precision" title="Link to this heading">#</a></h3>
 <p>Now consider performing the same operation in single precision:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># -----------------------------</span>
 <span class="c1"># FP32</span>
@@ -458,7 +489,115 @@ N\varepsilon_{32} dx
 ~~~~
 \varepsilon_{32} \left(N x_0 + \frac{N(N+1)}{2}\ dx\right)
 \]</div>
-<p>which are exactly the same, except that are <span class="math notranslate nohighlight">\(\varepsilon_{32}/\varepsilon_{64} = 6\times 10^8\)</span> times larger.</p>
+<p>which are exactly the same, except that are <span class="math notranslate nohighlight">\(\varepsilon_{32}/\varepsilon_{64} = 6\times 10^8\)</span> times larger.
+This error is significant, and limits the usefulness of single precision in calculations.
+This is why domain specialists will say that using double precision is necessary in their applications.</p>
+<section id="id1">
+<h4>Results<a class="headerlink" href="#id1" title="Link to this heading">#</a></h4>
+<p>Executing the code in single precision, we obtain</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FP64</span> <span class="n">final</span> <span class="n">value</span><span class="p">:</span> <span class="mf">10001.000001578721</span><span class="p">,</span> <span class="n">accumulated</span> <span class="n">error</span><span class="p">:</span> <span class="mf">1.579e-06</span>
+<span class="n">FP32</span> <span class="n">final</span> <span class="n">value</span><span class="p">:</span> <span class="mf">9781.180664062500</span><span class="p">,</span> <span class="n">accumulated</span> <span class="n">error</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.198e+02</span>
+</pre></div>
+</div>
+<p>instead of the exact result 10001.
+Note that this is indeed <span class="math notranslate nohighlight">\(\sim10^8\)</span> times larger than the accumulation error in the corresponding double precision calculation.
+Note also that the sign of the error is negative, and the accumulation error can accumulate in either direction.</p>
+<p>Using the parameters <span class="math notranslate nohighlight">\(x_0=1\)</span>, <span class="math notranslate nohighlight">\(N=10,000,000\)</span>, <span class="math notranslate nohighlight">\(dx=0.001\)</span> and <span class="math notranslate nohighlight">\(\varepsilon_{32}=6\times 10^{-8}\)</span>, the three error terms are approximately</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+N\varepsilon_{32} dx = 10^8 . 6 \times 10^{-8} . 10^{-3} &amp;= 6 \times 10^{-3},\\
+N \varepsilon_{32} x_0 &amp;= 6 \\
+\varepsilon_{32} \frac{N(N+1)}{2} dx = 6\times 10^{-8} \frac{10^{16}}{2} 10^{-3} &amp;= 6\times 10^{5}. 
+\end{split}\]</div>
+<p>Again, this approximation is too large, because it does not account for errors cancelling with themselves.</p>
+</section>
+</section>
+<section id="mixed-precision">
+<h3>Mixed Precision<a class="headerlink" href="#mixed-precision" title="Link to this heading">#</a></h3>
+<p>The accumulation error in single precision is more than <span class="math notranslate nohighlight">\(2\%\)</span> of the final answer, which is (usually) unacceptably high.
+However, using single precision is computationally very attractive:
+using FP32 halves the memory transfer costs relative to FP64,
+and significantly reduces computation costs relative to FP64 – sometimes up to <span class="math notranslate nohighlight">\(\times64\)</span> faster, depending on GPU architecture.</p>
+<p>The approach to retaining the benefits of single precision while keeping the accuracy of double precision is to use <em>mixed precision</em>,
+that is, to compute in single precision, but accumulate the result in double precision.</p>
+<p>The mixed precision code is</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># -----------------------------</span>
+<span class="c1"># Mixed</span>
+<span class="c1"># -----------------------------</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">dx</span><span class="p">)</span>
+<span class="n">error_mixed</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">x0</span> <span class="o">+</span> <span class="n">N</span><span class="o">*</span><span class="n">dx</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mixed final value: </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.12f</span><span class="si">}</span><span class="s2">, accumulated error: </span><span class="si">{</span><span class="n">error_mixed</span><span class="si">:</span><span class="s2">.3e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This retains the computational benefits of single precision, as the <code class="docutils literal notranslate"><span class="pre">+=</span></code> operation is performed in single precision.
+Similarly, the vast majority of memory loads are of <span class="math notranslate nohighlight">\(dx\)</span>, a single precision number.</p>
+<p>The accumulation error calculation now changes subtly but importantly.
+The error in the increment remains in single precision:</p>
+<div class="math notranslate nohighlight">
+\[
+N\varepsilon_{32} dx
+\]</div>
+<p>but the error from the partial sum is at double precision</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{k=1}^{N} \varepsilon_{64} x_k = 
+\varepsilon_{64} \left(N x_0 + \frac{N(N+1)}{2}\ dx\right).
+\]</div>
+<p>This suggests that the dominant error will be <span class="math notranslate nohighlight">\(N\varepsilon_{32} dx\)</span>, which grows more slowly with <span class="math notranslate nohighlight">\(N\)</span> than the other errors but starts at a much higher level.</p>
+<section id="id2">
+<h4>Results<a class="headerlink" href="#id2" title="Link to this heading">#</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FP64</span> <span class="n">final</span> <span class="n">value</span><span class="p">:</span> <span class="mf">10001.000001578721</span><span class="p">,</span> <span class="n">accumulated</span> <span class="n">error</span><span class="p">:</span> <span class="mf">1.579e-06</span>
+<span class="n">FP32</span> <span class="n">final</span> <span class="n">value</span><span class="p">:</span> <span class="mf">9781.180664062500</span><span class="p">,</span> <span class="n">accumulated</span> <span class="n">error</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.198e+02</span>
+<span class="n">Mixed</span> <span class="n">final</span> <span class="n">value</span><span class="p">:</span> <span class="mf">10001.000474974513</span><span class="p">,</span> <span class="n">accumulated</span> <span class="n">error</span><span class="p">:</span> <span class="mf">4.750e-04</span>
+</pre></div>
+</div>
+<p>Now the observed error is closer to the FP64 accumulation error.
+Note it is correct to 8 significant figures, the precision of FP32.</p>
+<p>Estimating the value of the theoretical errors, we have</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+N\varepsilon_{32} dx = 10^8 . 6 \times 10^{-8} . 10^{-3} &amp;= 6 \times 10^{-3},\\
+N \varepsilon_{64} x_0 &amp;= 10^{-8}\\
+\varepsilon_{64} \frac{N(N+1)}{2} dx = 10^{-16} \frac{10^{16}}{2} 10^{-3} &amp;= 5\times 10^{-4},
+\end{split}\]</div>
+<p>which shows the linear <span class="math notranslate nohighlight">\(N\varepsilon_{32}dx\)</span> error dominates, and agrees reasonably well with the observed error.</p>
+</section>
+<section id="implications">
+<h4>Implications<a class="headerlink" href="#implications" title="Link to this heading">#</a></h4>
+<p>With mixed precision, we have suppressed the fastest growing <span class="math notranslate nohighlight">\(O(\varepsilon_{32}N^2dx)\)</span> error by accumulating in FP64.
+This gives a larger, but acceptable and slower-growing error up to larger values of <span class="math notranslate nohighlight">\(N\)</span> – in effect, allowing more accumulation steps.</p>
+<p>To see this, let’s compare the errors. The linear error will dominate the quadratic error, when</p>
+<div class="math notranslate nohighlight">
+\[
+N\varepsilon_{32} dx \gtrsim
+\varepsilon_{64} \frac{N(N+1)}{2} dx 
+\]</div>
+<p>that is, when</p>
+<div class="math notranslate nohighlight">
+\[
+ N  
+\lesssim
+2 \varepsilon_{32} / \varepsilon_{64} = 1.2 \times 10^9
+\]</div>
+<p>So while in pure single precision, the quadratic error dominates immediately, because</p>
+<div class="math notranslate nohighlight">
+\[
+N\varepsilon_{32} dx &lt;
+\varepsilon_{32} \frac{N(N+1)}{2} dx ,
+~~~~
+\forall N &gt; 1,
+\]</div>
+<p>and the error is <span class="math notranslate nohighlight">\(\sim \varepsilon_{32} N^2 dx\)</span>,
+for mixed precision, the error is smaller at <span class="math notranslate nohighlight">\(\sim \varepsilon_{32}N dx\)</span>,
+which stays the dominant error for the first <span class="math notranslate nohighlight">\(2\varepsilon_{32}/\varepsilon_{64} \sim 10^9\)</span> loop iterations.</p>
+</section>
+</section>
+<section id="accumulation-error-versus-loop-iterations">
+<h3>Accumulation Error versus Loop Iterations<a class="headerlink" href="#accumulation-error-versus-loop-iterations" title="Link to this heading">#</a></h3>
+<p><img alt="" src="../_images/accumulated_error.png" /></p>
+</section>
 </section>
 </section>
 
@@ -517,14 +656,25 @@ N\varepsilon_{32} dx
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Representation Error</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#accumulation-error">Accumulation Error</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#double-precision">Double Precision</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#single-precision">Single Precision</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#representation-error">Representation Error</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#accumulation-error">Accumulation Error</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#double-precision">Double Precision</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#results">Results</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#single-precision">Single Precision</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Results</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mixed-precision">Mixed Precision</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Results</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#implications">Implications</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#accumulation-error-versus-loop-iterations">Accumulation Error versus Loop Iterations</a></li>
 </ul>
 </li>
 </ul>
-
   </nav></div>
 
 </div></div>
