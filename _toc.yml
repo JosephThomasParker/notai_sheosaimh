@@ -10,3 +10,4 @@ parts:
       - file: reduced_precision/intro
       - file: reduced_precision/operation_costs
       - file: reduced_precision/accumulation_error
+      - file: reduced_precision/discretization_error

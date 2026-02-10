@@ -30,9 +30,12 @@ repository:
 html:
   use_issues_button: true
   use_repository_button: true
-
-html:
   extra_footer: "Copyright@2026"
+  mathjax_config:
+    TeX:
+      Macros:
+        fd: ["\\frac{\\mathrm{d}#1}{\\mathrm{d}#2}",2]
+        test: "ha!"
 
 # remove jupyterbooks copyright info
 sphinx:
